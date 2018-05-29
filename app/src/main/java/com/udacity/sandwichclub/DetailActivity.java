@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,16 +16,18 @@ import com.udacity.sandwichclub.utils.JsonUtils;
 public class DetailActivity extends AppCompatActivity {
 
     private ImageView mImvSandwich;
-    private TextView mTxvSandwichName, mTxvAlsoKnownAs, mTxvOrigin, mTxvDescription, mTxvIngredients;
+    private TextView mTxvSandwichName, mTxvAlsoKnowAsLabel, mTxvAlsoKnownAs, mTxvOriginLabel, mTxvOrigin, mTxvDescription, mTxvIngredients;
 
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
 
     private void initView() {
-        setContentView(R.layout.activity_detail_);
+        setContentView(R.layout.activity_detail);
         mImvSandwich = findViewById(R.id.imv_sandwich);
         mTxvSandwichName = findViewById(R.id.txv_sandwich_name);
+        mTxvAlsoKnowAsLabel = findViewById(R.id.txv_aka_label);
         mTxvAlsoKnownAs = findViewById(R.id.txv_aka);
+        mTxvOriginLabel = findViewById(R.id.txv_place_label);
         mTxvOrigin = findViewById(R.id.txv_place_origin);
         mTxvDescription = findViewById(R.id.txv_description);
         mTxvIngredients = findViewById(R.id.txv_ingredients);
@@ -55,18 +58,29 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         populateUI(sandwich);
-    }
-
-    private void populateUI(Sandwich sandwich) {
         setTitle(sandwich.getMainName());
         Picasso.with(this)
                 .load(sandwich.getImage())
+                .resize(0, 200)
                 .into(mImvSandwich);
+    }
+
+    private void populateUI(Sandwich sandwich) {
         mTxvSandwichName.setText(sandwich.getMainName());
         mTxvAlsoKnownAs.setText(TextUtils.join(", ", sandwich.getAlsoKnownAs()));
         mTxvOrigin.setText(sandwich.getPlaceOfOrigin());
         mTxvDescription.setText(sandwich.getDescription());
-        mTxvIngredients.setText(TextUtils.join("\n", sandwich.getIngredients()));
+        mTxvIngredients.setText(String.format("%s %s", getResources().getString(R.string.bullet), TextUtils.join("\n\u2022 ", sandwich.getIngredients())));
+
+        if (mTxvAlsoKnownAs.getText().toString().isEmpty()) {
+            mTxvAlsoKnownAs.setVisibility(View.GONE);
+            mTxvAlsoKnowAsLabel.setVisibility(View.GONE);
+        }
+
+        if (mTxvOrigin.getText().toString().isEmpty()) {
+            mTxvOrigin.setVisibility(View.GONE);
+            mTxvOriginLabel.setVisibility(View.GONE);
+        }
     }
 
     private void closeOnError() {

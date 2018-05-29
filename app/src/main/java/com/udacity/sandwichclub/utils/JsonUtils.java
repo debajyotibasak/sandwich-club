@@ -25,7 +25,7 @@ public class JsonUtils {
     public static Sandwich parseSandwichJson(String json) {
         try {
             JSONObject sandwichDetailsJson = new JSONObject(json);
-            JSONObject nameJson = new JSONObject(NAME);
+            JSONObject nameJson = sandwichDetailsJson.getJSONObject(NAME);
             String mainName = parseMainName(nameJson);
             List<String> asKnownAs = parseAlsoKnownAs(nameJson);
             String placeOfOrigin = sandwichDetailsJson.getString(PLACE_OF_ORIGIN);
